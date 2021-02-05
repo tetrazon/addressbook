@@ -1,0 +1,24 @@
+{
+    "name": "Person_name",
+    "contacts": [
+        {
+            "telephone": "+375291111555"
+        },
+        {
+            "telephone": "+375291111111"
+        },
+        {
+            "telephone": "+375291111111"
+        }
+    ],
+    "addresses": [
+        {
+            "city": "Test",
+            "street": "Test"
+        },
+        {
+            "city": "Test1",
+            "street": "Test1"
+        }
+    ]
+}

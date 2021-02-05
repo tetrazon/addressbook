@@ -66,6 +66,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    @Transactional
     public PersonDto update(PersonDto personDto) {
         return create(personDto);
     }
