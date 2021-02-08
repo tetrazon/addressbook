@@ -22,7 +22,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AddressbookApplication.class)
-@TestPropertySource("classpath:application.properties")
 class PersonServiceImplTest {
     @Autowired
     private PersonService personService;

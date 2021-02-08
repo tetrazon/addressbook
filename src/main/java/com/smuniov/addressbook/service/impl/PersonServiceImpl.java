@@ -10,7 +10,6 @@ import com.smuniov.addressbook.repository.JpaAddressRepository;
 import com.smuniov.addressbook.repository.JpaPersonRepository;
 import com.smuniov.addressbook.service.PersonService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -88,13 +87,16 @@ public class PersonServiceImpl implements PersonService {
         }
         personToSave.setAddresses(addresses);
 
-        for (Address address : personToSave.getAddresses()) {
-            System.out.println(address.getId());
-        }
         List<Contact> contactsToSave = new ArrayList<>(personFromDto.getContacts());
         setPersonInContacts(personToSave, contactsToSave);
 
+        deleteOldContactsAndSetNewContacts(personToSave, contactsToSave);
+        personToSave.setName(personFromDto.getName());
+        personRepository.save(personToSave);
+        return personMapper.personToPersonDto(personToSave);
+    }
 
+    private void deleteOldContactsAndSetNewContacts(Person personToSave, List<Contact> contactsToSave) {
         List<Contact> contactsToDelete = new ArrayList<>(personToSave.getContacts());
         for (Contact contactToDel: contactsToDelete){
             personToSave.removeContact(contactToDel);
@@ -102,9 +104,6 @@ public class PersonServiceImpl implements PersonService {
         for (Contact contactToAdd : contactsToSave){
             personToSave.addContact(contactToAdd);
         }
-        personToSave.setName(personFromDto.getName());
-        personRepository.save(personToSave);
-        return personMapper.personToPersonDto(personToSave);
     }
 
     private void setPersonInContacts(Person person, List<Contact> contacts) {

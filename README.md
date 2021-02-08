@@ -23,7 +23,7 @@ GET запрос на http://localhost:8081/{id}
 
 Информация о пользователе по имени:
 
-GET запрос на http://localhost:8081/{name}
+GET запрос на http://localhost:8081/?name=NameToFind
 
 Создание нового блока данных:
 
