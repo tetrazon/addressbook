@@ -8,6 +8,8 @@ import com.smuniov.addressbook.exceptions.BadDataException;
 import com.smuniov.addressbook.mapper.PersonMapper;
 import com.smuniov.addressbook.repository.JpaAddressRepository;
 import com.smuniov.addressbook.repository.JpaPersonRepository;
+import com.smuniov.addressbook.service.AddressService;
+import com.smuniov.addressbook.service.ContactService;
 import com.smuniov.addressbook.service.PersonService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +19,14 @@ import java.util.*;
 @Service
 public class PersonServiceImpl implements PersonService {
     private final JpaPersonRepository personRepository;
-    private final JpaAddressRepository addressRepository;
+    private final ContactService contactService;
+    private final AddressService addressService;
     private final PersonMapper personMapper;
 
-    public PersonServiceImpl(JpaPersonRepository personRepository, JpaAddressRepository addressRepository, PersonMapper personMapper) {
+    public PersonServiceImpl(JpaPersonRepository personRepository, JpaAddressRepository addressRepository, ContactService contactService, AddressService addressService, PersonMapper personMapper) {
         this.personRepository = personRepository;
-        this.addressRepository = addressRepository;
+        this.contactService = contactService;
+        this.addressService = addressService;
         this.personMapper = personMapper;
     }
 
@@ -80,54 +84,13 @@ public class PersonServiceImpl implements PersonService {
             optionalPersonFromDb = personRepository.findById(personId);
             personToSave = optionalPersonFromDb.orElseThrow(() -> new BadDataException("Wrong id!"));
         }
-        Set<Address> addresses = setAddressesFromDbIfExists(personFromDto.getAddresses());
-
-        if (personToSave.getAddresses() != null) {
-            personToSave.getAddresses().clear();
-        }
-        personToSave.setAddresses(addresses);
-
-        List<Contact> contactsToSave = new ArrayList<>(personFromDto.getContacts());
-        setPersonInContacts(personToSave, contactsToSave);
-
-        deleteOldContactsAndSetNewContacts(personToSave, contactsToSave);
+        Set<Address> addresses = addressService.setAddressesFromDbIfExists(personFromDto.getAddresses());
+        addressService.setAddressesToPerson(personToSave, addresses);
+        List<Contact> contactsToSave = contactService.getContacts(personFromDto, personToSave);
+        contactService.deleteOldContactsAndSetNewContacts(personToSave, contactsToSave);
         personToSave.setName(personFromDto.getName());
         personRepository.save(personToSave);
         return personMapper.personToPersonDto(personToSave);
-    }
-
-    private void deleteOldContactsAndSetNewContacts(Person personToSave, List<Contact> contactsToSave) {
-        List<Contact> contactsToDelete = new ArrayList<>(personToSave.getContacts());
-        for (Contact contactToDel: contactsToDelete){
-            personToSave.removeContact(contactToDel);
-        }
-        for (Contact contactToAdd : contactsToSave){
-            personToSave.addContact(contactToAdd);
-        }
-    }
-
-    private void setPersonInContacts(Person person, List<Contact> contacts) {
-
-        for (Contact contact : contacts) {
-            person.addContact(contact);
-        }
-    }
-
-    private Set<Address> setAddressesFromDbIfExists(Set<Address> addressesToCheck) {
-        Set<Address> addressesToSave = new HashSet<>();
-        Optional<Address> optionalAddress;
-        for (Address address : addressesToCheck) {
-            optionalAddress = addressRepository.findByCityAndAndStreet(address.getCity(), address.getStreet());
-            if (optionalAddress.isPresent()) {
-                addressesToSave.add(optionalAddress.get());
-            } else {
-                addressRepository.save(address);
-                addressesToSave.add(address);
-            }
-        }
-        addressesToCheck = addressesToSave;
-        return addressesToSave;
-
     }
 
 }
