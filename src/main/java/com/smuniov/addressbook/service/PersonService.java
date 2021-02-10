@@ -1,6 +1,8 @@
 package com.smuniov.addressbook.service;
 
 import com.smuniov.addressbook.dto.PersonDto;
+import com.smuniov.addressbook.entity.Contact;
+import com.smuniov.addressbook.entity.Person;
 
 import java.util.List;
 

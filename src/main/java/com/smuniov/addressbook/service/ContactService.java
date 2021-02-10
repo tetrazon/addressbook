@@ -6,6 +6,6 @@ import com.smuniov.addressbook.entity.Person;
 import java.util.List;
 
 public interface ContactService {
-    void deleteOldContactsAndSetNewContacts(Person personToSave, List<Contact> contactsToSave);
-    List<Contact> getContacts(Person personFromDto, Person personToSave);
+    List<Contact> getContactsWithPerson(Person person, List<Contact> contacts);
+    void clearContacts(Person person);
 }

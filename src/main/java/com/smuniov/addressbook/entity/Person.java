@@ -17,7 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 public class Person {
-    public static final int START_SEQ = 10000;
+    private static final int START_SEQ = 100;
 
     @Id
     @SequenceGenerator(name = "person_seq", sequenceName = "person_seq", allocationSize = 1, initialValue = START_SEQ)
@@ -29,33 +29,21 @@ public class Person {
     @Size(min = 1)
     private String name;
 
-    @OneToMany(mappedBy = "person", orphanRemoval = true,fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "person", fetch = FetchType.EAGER, cascade = CascadeType.ALL) //orphanRemoval = true,
     private List<Contact> contacts;
 
-    @ManyToMany
+    @ManyToMany(cascade =
+            {
+                    CascadeType.DETACH,
+                    CascadeType.MERGE,
+                    CascadeType.REFRESH,
+                    CascadeType.PERSIST
+            })
     @JoinTable(name = "person_address",
             joinColumns = @JoinColumn(name = "person_fk"),
-            inverseJoinColumns = @JoinColumn(name = "address_fk"))
+            inverseJoinColumns = @JoinColumn(name = "address_fk"),
+            foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT),
+            inverseForeignKey = @ForeignKey(ConstraintMode.CONSTRAINT))
     private Set<Address> addresses;
-
-    public void removeAddress(Address address){
-        this.addresses.removeIf(a->a.equals(address));
-        address.getPersonsLiveOnThatAddress().remove(this);
-    }
-
-    public void addContact(Contact contact){
-
-        if(contacts == null) {
-            contacts = new ArrayList<>();
-        }
-        contact.setPerson(this);
-        contacts.add(contact);
-    }
-
-    public void removeContact(Contact contact){
-
-        contacts.remove(contact);
-    }
-
 
 }

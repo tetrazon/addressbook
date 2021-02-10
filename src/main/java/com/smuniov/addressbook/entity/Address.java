@@ -1,15 +1,11 @@
 package com.smuniov.addressbook.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "address")
@@ -39,6 +35,6 @@ public class Address {
     private String street;
 
     @ManyToMany(mappedBy = "addresses")
-    private List<Person> personsLiveOnThatAddress;
+    private List<Person> persons;
 
 }

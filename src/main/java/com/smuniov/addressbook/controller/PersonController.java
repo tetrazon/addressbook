@@ -2,13 +2,12 @@ package com.smuniov.addressbook.controller;
 
 import com.smuniov.addressbook.dto.PersonDto;
 import com.smuniov.addressbook.service.PersonService;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/address-book/persons")
 public class PersonController {
     private final PersonService personService;
 
@@ -16,21 +15,22 @@ public class PersonController {
         this.personService = personService;
     }
 
-    @GetMapping("all")
+    @GetMapping
     public List<PersonDto> personList(){
         return personService.getAll();
     }
-    @GetMapping("{id}")
+
+    @GetMapping("/{id}")
     public PersonDto getById(@PathVariable("id") String id){
         return personService.getById(id);
     }
 
-    @GetMapping
+    @GetMapping("/person/")
     public PersonDto getByName(@RequestParam("name") String name){
         return personService.getByName(name);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/person/{id}")
     public void delete(@PathVariable("id") int id) {
         personService.deleteById(id);
     }

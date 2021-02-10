@@ -2,35 +2,43 @@ package com.smuniov.addressbook.service.impl;
 
 import com.smuniov.addressbook.entity.Contact;
 import com.smuniov.addressbook.entity.Person;
+import com.smuniov.addressbook.repository.JpaContactRepository;
 import com.smuniov.addressbook.service.ContactService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ContactServiceImpl implements ContactService {
-    @Override
-    public void deleteOldContactsAndSetNewContacts(Person personToSave, List<Contact> contactsToSave) {
-        List<Contact> contactsToDelete = new ArrayList<>(personToSave.getContacts());
-        for (Contact contactToDel: contactsToDelete){
-            personToSave.removeContact(contactToDel);
-        }
-        for (Contact contactToAdd : contactsToSave){
-            personToSave.addContact(contactToAdd);
-        }
+    private final JpaContactRepository contactRepository;
+
+    public ContactServiceImpl(JpaContactRepository contactRepository) {
+        this.contactRepository = contactRepository;
     }
 
     @Override
-    public List<Contact> getContacts(Person personFromDto, Person personToSave) {
-        List<Contact> contactsToSave = new ArrayList<>(personFromDto.getContacts());
-        setPersonInContacts(personToSave, contactsToSave);
-        return contactsToSave;
+    @Transactional
+    public List<Contact> getContactsWithPerson(Person person, List<Contact> contacts) {
+        for (Contact contact: contacts) {
+            contact.setPerson(person);
+        }
+        return contacts;
     }
 
-    private void setPersonInContacts(Person person, List<Contact> contacts) {
-        for (Contact contact : contacts) {
-            person.addContact(contact);
+    @Override
+    @Transactional
+    public void clearContacts(Person person) {
+        Optional<List<Contact>> optionalContacts = Optional.ofNullable(person.getContacts());
+        if (optionalContacts.isPresent()){
+            List<Contact> contactsToClear = new ArrayList<>(optionalContacts.get());
+            if (!contactsToClear.isEmpty()) {
+                person.getContacts().clear();
+                contactRepository.deleteAll(contactsToClear);
+            }
         }
     }
+
 }
