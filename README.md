@@ -15,19 +15,19 @@
 
 Список всех пользователей:
 
-GET запрос на http://localhost:8081/all
+GET запрос на http://localhost:8081/address-book/persons
 
 Информация о пользователе по id:
 
-GET запрос на http://localhost:8081/{id}
+GET запрос на http://localhost:8081/address-book/persons/{id}
 
 Информация о пользователе по имени:
 
-GET запрос на http://localhost:8081/?name=NameToFind
+GET запрос на http://localhost:8081/address-book/persons/?name=NameToFind
 
 Создание нового блока данных:
 
-POST запрос на http://localhost:8081/
+POST запрос на http://localhost:8081/address-book/persons
 
 Тело запроса:
 
@@ -61,7 +61,7 @@ JSON с параметрами name, contacts и addresses:
 
 Изменение блока данных:
 
-PUT запрос на http://localhost:8081/
+PUT запрос на http://localhost:8081/address-book/persons
 
 Тело запроса:
 
@@ -87,5 +87,5 @@ PUT запрос на http://localhost:8081/
 
 Удаление информации о пользователе по id:
 
-DELETE запрос на http://localhost:8081/{id}
+DELETE запрос на http://localhost:8081/address-book/persons/{id}
 
