@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
@@ -21,6 +22,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AddressbookApplication.class)
+@Sql({"classpath:initTestDB.sql", "classpath:insertTestData.sql"})
 class PersonServiceImplTest {
     @Autowired
     private PersonService personService;
@@ -35,7 +37,7 @@ class PersonServiceImplTest {
 
     @Test
     void getById() {
-        assertTrue(personService.getById("1") != null);
+        assertNotNull(personService.getById("1"));
     }
 
     @Test
