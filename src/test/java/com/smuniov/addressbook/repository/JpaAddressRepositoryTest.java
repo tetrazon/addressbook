@@ -24,7 +24,7 @@ class JpaAddressRepositoryTest {
         address.setCity("TestCity");
         address.setStreet("TestStreet");
         addressRepository.save(address);
-        Optional<Address> optionalAddressFromDb = addressRepository.findByCityAndAndStreet(address.getCity(), address.getStreet());
+        Optional<Address> optionalAddressFromDb = addressRepository.findByCityAndStreet(address.getCity(), address.getStreet());
         assertTrue(optionalAddressFromDb.isPresent());
         int addressId = optionalAddressFromDb.get().getId();
         assertEquals(optionalAddressFromDb.get().getCity(), address.getCity());

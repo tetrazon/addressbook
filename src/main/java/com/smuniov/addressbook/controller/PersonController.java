@@ -4,6 +4,7 @@ import com.smuniov.addressbook.dto.PersonDto;
 import com.smuniov.addressbook.service.PersonService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -36,12 +37,12 @@ public class PersonController {
     }
 
     @PostMapping
-    public PersonDto create(@RequestBody PersonDto personDto){
+    public PersonDto create(@Valid @RequestBody PersonDto personDto){
         return personService.create(personDto);
     }
 
     @PutMapping
-    public PersonDto update(@RequestBody PersonDto personDto){
+    public PersonDto update(@Valid @RequestBody PersonDto personDto){
         return personService.update(personDto);
     }
 

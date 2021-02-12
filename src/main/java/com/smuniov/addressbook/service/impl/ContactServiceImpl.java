@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,9 @@ public class ContactServiceImpl implements ContactService {
     @Override
     @Transactional
     public List<Contact> getContactsWithPerson(Person person, List<Contact> contacts) {
+        if (contacts == null){
+            return Collections.emptyList();
+        }
         for (Contact contact: contacts) {
             contact.setPerson(person);
         }

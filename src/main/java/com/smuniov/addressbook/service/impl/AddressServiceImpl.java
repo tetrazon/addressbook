@@ -26,7 +26,7 @@ public class AddressServiceImpl implements AddressService {
         Optional<Address> optionalAddress;
         for (Address address : addressesToCheck) {
             optionalAddress = addressRepository
-                    .findByCityAndAndStreet(address.getCity(), address.getStreet());
+                    .findByCityAndStreet(address.getCity(), address.getStreet());
             if (optionalAddress.isPresent()) {
                 addressesToSave.add(optionalAddress.get());
             } else {
@@ -41,7 +41,6 @@ public class AddressServiceImpl implements AddressService {
         return addressesToSave;
     }
 
-    @Transactional
     public void deleteNonUsedAddresses(Set<Address> oldAddresses) {
         if (oldAddresses == null || oldAddresses.size() == 0){
             return;
