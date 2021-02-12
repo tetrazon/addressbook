@@ -9,7 +9,7 @@ import java.util.List;
 public interface PersonService {
     List<PersonDto> getAll();
     PersonDto getById(String id);
-    PersonDto getByName(String name);
+    List<PersonDto> getByName(String name);
     PersonDto update(PersonDto personDto);
     void deleteById(int id);
     PersonDto create(PersonDto personDto);

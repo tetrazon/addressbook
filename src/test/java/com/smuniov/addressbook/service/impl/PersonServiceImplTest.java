@@ -43,7 +43,7 @@ class PersonServiceImplTest {
     @Test
     void getByName() {
         String name = "Victor";
-        PersonDto person = personService.getByName(name);
+        PersonDto person = personService.getByName(name).get(0);
         assertEquals(person.getName(), name);
     }
 

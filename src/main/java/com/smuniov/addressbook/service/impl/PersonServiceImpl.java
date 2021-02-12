@@ -56,11 +56,10 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     @Transactional
-    public PersonDto getByName(String name) {
+    public List<PersonDto> getByName(String name) {
         name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
-        return personMapper.personToPersonDto(personRepository
+        return personMapper.personsToPersonDtos(personRepository
                 .findByName(name)
-                .map(list -> list.get(0))
                 .orElseThrow(() -> new BadDataException("wrong name!")));
     }
 

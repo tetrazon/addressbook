@@ -27,7 +27,7 @@ public class PersonController {
     }
 
     @GetMapping("/person/")
-    public PersonDto getByName(@RequestParam("name") String name){
+    public List<PersonDto> getByName(@RequestParam("name") String name){
         return personService.getByName(name);
     }
 
