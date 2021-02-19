@@ -102,6 +102,7 @@ public class PersonServiceImpl implements PersonService {
         personToSave.setContacts(contactService
                 .getContactsWithPerson(personToSave, personFromDto.getContacts()));
         personToSave.setName(personFromDto.getName());
+        personToSave.setEmail(personFromDto.getEmail());
         personRepository.save(personToSave);
         return personMapper.personToPersonDto(personToSave);
     }
