@@ -25,10 +25,14 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<String> create(@Valid @RequestBody UserDto userDto) throws URISyntaxException {
-        System.out.println(userDto.getUsername());
-        System.out.println(userDto.getPassword());
         userService.create(userDto);
         return ResponseEntity.created(new URI("/address-book/users/" + userDto.getUsername())).build();
+    }
+
+    @PutMapping
+    public ResponseEntity<String> update(@Valid @RequestBody UserDto userDto) {
+        userService.update(userDto);
+        return ResponseEntity.ok("user updated");
     }
 
     @GetMapping
@@ -44,6 +48,7 @@ public class UserController {
     }
 
     @DeleteMapping("/user/{username}")
+    @Secured("ADMIN")
     public void deleteByUsername(@PathVariable String username) {
         userService.deleteByUsername(username);
     }

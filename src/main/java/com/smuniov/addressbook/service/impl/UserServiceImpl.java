@@ -1,8 +1,6 @@
 package com.smuniov.addressbook.service.impl;
 
-import com.smuniov.addressbook.dto.RoleDto;
 import com.smuniov.addressbook.dto.UserDto;
-import com.smuniov.addressbook.entity.Role;
 import com.smuniov.addressbook.entity.User;
 import com.smuniov.addressbook.exceptions.BadDataException;
 import com.smuniov.addressbook.mapper.UserMapper;
@@ -11,6 +9,7 @@ import com.smuniov.addressbook.service.RoleService;
 import com.smuniov.addressbook.service.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +22,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, RoleService roleService) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -42,44 +43,45 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void create(UserDto userDto) {
         @NotBlank @NotNull String username = userDto.getUsername();
-        if (userRepository.findByUsername(username) != null){
+        if (userRepository.findByUsername(username) != null) {
             throw new BadDataException("user with username '" + username + "' is already existed");
         }
-        Set<RoleDto> userDtoRoles = userDto.getRoles();
-        Set<Role> roles = new HashSet<>();
-        if (userDtoRoles == null || userDtoRoles.isEmpty()){
-            Role role = roleService.getByRoleName("USER");
-            roles = Collections.singleton(role);
-        }
         User user = userMapper.userDtoToUser(userDto);
-        System.out.println("username: "+user.getUsername());
-        user.setRoles(roles);
+        roleService.setRoles(userDto, user);
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userRepository.save(user);
     }
 
     @Override
     public UserDto getByUsername(String username) {
-        Optional<User> optionalUser= Optional.ofNullable(userRepository.findByUsername(username));
+        Optional<User> optionalUser = Optional.ofNullable(userRepository.findByUsername(username));
         return userMapper.userToUserDto(optionalUser.orElseThrow(() -> new BadDataException("user not found!")));
     }
 
     @Override
     @Transactional
     public void deleteByUsername(String username) {
-        if (userRepository.findByUsername(username) == null){
+        if (userRepository.findByUsername(username) == null) {
             throw new BadDataException("no user with username: " + username);
         }
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String usernameInContext = userDetails.getUsername();
         System.out.println("usernameInContext: " + usernameInContext);
-        if (usernameInContext.equals(username)){
+        if (usernameInContext.equals(username)) {
             throw new BadDataException("cannot delete yourself!");
         }
         userRepository.deleteByUsername(username);
     }
 
     @Override
-    public void update(UserDto userDtoUpdate) {
-
+    public void update(UserDto userDto) {
+        String username = userDto.getUsername();
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new BadDataException("no user with username: " + username);
+        }
+        roleService.setRoles(userDto, user);
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        userRepository.save(user);
     }
 }
