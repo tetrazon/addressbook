@@ -3,8 +3,6 @@ package com.smuniov.addressbook.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -23,14 +21,10 @@ public class Address {
     private Integer id;
 
     @Column(name = "city", nullable = false)
-    @NotBlank
-    @Size(min = 1)
     @EqualsAndHashCode.Include
     private String city;
 
     @Column(name = "street", nullable = false)
-    @NotBlank
-    @Size(min = 1)
     @EqualsAndHashCode.Include
     private String street;
 

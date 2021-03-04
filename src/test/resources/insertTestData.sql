@@ -5,10 +5,10 @@ DELETE FROM address;
 DELETE FROM person_address;
 
 
-INSERT INTO person(id, name) VALUES
-(1, 'Victor'),
-(2, 'Oleg'),
-(3, 'Stas');
+INSERT INTO person(id, name, email) VALUES
+(1, 'Victor', 'victor@gmail.com'),
+(2, 'Oleg', 'oleg@gmail.com'),
+(3, 'Stas', 'stas@gmail.com');
 
 INSERT INTO contact(id, telephone, person_fk) VALUES
 (1, '+375297777777', 1),

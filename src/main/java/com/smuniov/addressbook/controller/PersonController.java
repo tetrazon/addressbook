@@ -27,8 +27,8 @@ public class PersonController {
     }
 
     @GetMapping("/person/")
-    public List<PersonDto> getByName(@RequestParam("name") String name){
-        return personService.getByName(name);
+    public PersonDto getByEmail(@RequestParam("email") String email){
+        return personService.getByEmail(email);
     }
 
     @DeleteMapping("/person/{id}")
@@ -43,7 +43,7 @@ public class PersonController {
 
     @PutMapping
     public PersonDto update(@Valid @RequestBody PersonDto personDto){
-        return personService.update(personDto);
+        return personService.update(personDto, true);
     }
 
 }
