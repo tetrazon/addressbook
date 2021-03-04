@@ -3,6 +3,7 @@ package com.smuniov.addressbook.service.impl;
 import com.smuniov.addressbook.dto.RoleDto;
 import com.smuniov.addressbook.dto.UserDto;
 import com.smuniov.addressbook.entity.Role;
+import com.smuniov.addressbook.entity.RoleName;
 import com.smuniov.addressbook.entity.User;
 import com.smuniov.addressbook.mapper.RoleMapper;
 import com.smuniov.addressbook.repository.RoleRepository;
@@ -24,7 +25,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role getByRoleName(String roleName) {
+    public Role getByRoleName(RoleName roleName) {
         return roleRepository.findByRoleName(roleName);
     }
 
@@ -38,10 +39,14 @@ public class RoleServiceImpl implements RoleService {
         Set<RoleDto> userDtoRoles = userDto.getRoles();
         Set<Role> roles = new HashSet<>();
         if (userDtoRoles == null || userDtoRoles.isEmpty()){
-            Role role = roleRepository.findByRoleName("USER");
+            //Role role = roleRepository.findByRoleName("USER");
+            Role role = roleRepository.findByRoleName(RoleName.USER);
             roles = Collections.singleton(role);
         } else {
             for (RoleDto roleDto: userDtoRoles){
+                String stringRoleName = roleDto.getRoleName().toString();
+                System.out.println(stringRoleName);
+                //Role roleFromDb = roleRepository.findByRoleName(stringRoleName);
                 Role roleFromDb = roleRepository.findByRoleName(roleDto.getRoleName());
                 if (roleFromDb == null){
                     roles.add(roleMapper.roleDtoToRole(roleDto));

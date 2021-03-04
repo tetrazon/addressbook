@@ -5,8 +5,6 @@ import com.smuniov.addressbook.dto.UserDto;
 import com.smuniov.addressbook.dto.Views;
 import com.smuniov.addressbook.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -48,7 +46,6 @@ public class UserController {
     }
 
     @DeleteMapping("/user/{username}")
-    @Secured("ADMIN")
     public void deleteByUsername(@PathVariable String username) {
         userService.deleteByUsername(username);
     }

@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -46,6 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                     .disable()
                 .authorizeRequests()
+                .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/springfox-swagger-ui/**", "/swagger-ui/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/address-book/persons/**").permitAll()//.hasAnyAuthority("USER", "CREATOR", "EDITOR", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/address-book/persons").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/address-book/persons/person/*")
@@ -58,8 +58,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .hasAnyAuthority("ADMIN", "EDITOR")
                 .antMatchers(HttpMethod.PUT, "/address-book/users/user/*")
                     .hasAnyAuthority("ADMIN", "EDITOR")
-//                .antMatchers(HttpMethod.DELETE, "/address-book/users/user/*")
-//                    .hasAuthority("ADMIN")//404 instead of 403 if other authorities
+                .antMatchers(HttpMethod.DELETE, "/address-book/users/user/*")
+                    .hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
 //                .sessionManagement()
@@ -69,8 +69,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().permitAll()
                 .and()
                 .httpBasic()
-                .and()
-                .exceptionHandling().accessDeniedPage("/403")
         ;
     }
 

@@ -22,7 +22,9 @@ public class Role {
     private Long id;
     @NotNull
     @NotBlank
-    @Column(name = "role_name")
+    @Column(name = "role_name", columnDefinition = "enum('ADMIN','USER','EDITOR')")
     @EqualsAndHashCode.Include
-    private String roleName;
+    @Enumerated(EnumType.STRING)
+    private RoleName roleName;
+    //private String roleName;
 }

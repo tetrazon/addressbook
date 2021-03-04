@@ -5,10 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,13 +22,9 @@ public class Person {
     private Integer id;
 
     @Column(name = "name", nullable = false)
-    @NotBlank
-    @Size(min = 1)
     private String name;
 
     @Column(name = "email", nullable = false)
-    @NotBlank
-    @Email
     private String email;
 
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER, cascade = CascadeType.ALL) //orphanRemoval = true,

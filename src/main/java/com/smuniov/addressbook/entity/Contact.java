@@ -1,10 +1,11 @@
 package com.smuniov.addressbook.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "contact")
@@ -21,8 +22,6 @@ public class Contact {
     private Integer id;
 
     @Column(name = "telephone", nullable = false)
-    @NotBlank
-    @Size(min = 13)
     private String telephone;
 
     @ManyToOne(targetEntity = Person.class)
