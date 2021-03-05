@@ -59,7 +59,6 @@ public class PersonServiceImpl implements PersonService {
     @Override
     @Transactional
     public PersonDto getByEmail(String email) {
-        //name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
         return personMapper.personToPersonDto(personRepository.findByEmail(email).orElseThrow(() -> {
             LOGGER.error("persons with such email is not found");
             return new BadDataException("wrong email!");
