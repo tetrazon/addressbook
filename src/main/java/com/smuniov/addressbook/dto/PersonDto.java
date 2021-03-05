@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -19,6 +20,9 @@ public class PersonDto {
     private Integer id;
     @NotBlank(message = "name is mandatory")
     private String name;
+    @NotBlank(message = "email is mandatory")
+    @Email(message = "must have email format")
+    private String email;
     @Valid
     private List<ContactDto> contacts;
     @Valid

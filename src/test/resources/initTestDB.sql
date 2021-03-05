@@ -22,7 +22,8 @@ CREATE TABLE address
 CREATE TABLE person
 (
     id       INTEGER PRIMARY KEY DEFAULT nextval('person_seq'),
-    name     VARCHAR NOT NULL
+    name     VARCHAR NOT NULL,
+    email    VARCHAR NOT NULL UNIQUE
 );
 
 CREATE TABLE contact
