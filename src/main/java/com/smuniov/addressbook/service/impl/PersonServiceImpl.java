@@ -8,8 +8,7 @@ import com.smuniov.addressbook.repository.JpaPersonRepository;
 import com.smuniov.addressbook.service.AddressService;
 import com.smuniov.addressbook.service.ContactService;
 import com.smuniov.addressbook.service.PersonService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -18,9 +17,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Log4j2
 public class PersonServiceImpl implements PersonService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
+    //private static final Logger LOGGER = LoggerFactory.getLogger(PersonServiceImpl.class);
 
     private final JpaPersonRepository personRepository;
     private final ContactService contactService;
@@ -47,22 +47,17 @@ public class PersonServiceImpl implements PersonService {
         try {
             intId = Integer.parseInt(id);
         } catch (NumberFormatException e) {
-            LOGGER.error("id is not a valid number", e);
             throw new BadDataException("id is not a valid number");
         }
-        return personMapper.personToPersonDto(personRepository.findById(intId).orElseThrow(() -> {
-            LOGGER.error("id is not found!");
-            return new BadDataException("id is not found!");
-        }));
+        return personMapper.personToPersonDto(personRepository.findById(intId).orElseThrow(() ->
+                new BadDataException("id is not found!")));
     }
 
     @Override
     @Transactional
     public PersonDto getByEmail(String email) {
-        return personMapper.personToPersonDto(personRepository.findByEmail(email).orElseThrow(() -> {
-            LOGGER.error("persons with such email is not found");
-            return new BadDataException("wrong email!");
-        }));
+        return personMapper.personToPersonDto(personRepository.findByEmail(email).orElseThrow(() ->
+                new BadDataException("wrong email! The person with such email is not found")));
     }
 
     @Override
@@ -70,9 +65,7 @@ public class PersonServiceImpl implements PersonService {
     public void deleteById(int id) {
         Optional<Person> optionalPerson = personRepository.findById(id);
         if (!optionalPerson.isPresent()) {
-            BadDataException badDataException = new BadDataException("person with id " + id + " not found");
-            LOGGER.error("wrong person id ", badDataException);
-            throw badDataException;
+            throw new BadDataException("person with id " + id + " not found");
         }
         Person personToDelete = optionalPerson.get();
         addressService.deleteNonUsedAddresses(personToDelete.getAddresses());
@@ -84,8 +77,7 @@ public class PersonServiceImpl implements PersonService {
     @Transactional
     public PersonDto create(PersonDto personDto) {
         if (!ObjectUtils.isEmpty(personDto.getId())) {
-            LOGGER.error("id in person when creating: delete id from person first!");
-            throw new BadDataException("delete id from person first!");
+            throw new BadDataException("id in person when creating: delete id from person first!");
         }
         return update(personDto, false);
     }
@@ -101,12 +93,10 @@ public class PersonServiceImpl implements PersonService {
             if (!ObjectUtils.isEmpty(personId) && personId >= 1) {
                 optionalPersonFromDb = personRepository.findById(personId);
                 personToSave = optionalPersonFromDb.orElseThrow(() -> {
-                    LOGGER.error("wrong id in findById(personId) method");
-                    return new BadDataException("Wrong id!");
+                    return new BadDataException("Wrong id in findById(personId) method");
                 });
             } else {
-                LOGGER.error("person without id when creating");
-                throw new BadDataException("person to update must contain id");
+                throw new BadDataException("person without id when updating: person to update must contain id");
             }
         }
         personToSave.setAddresses(addressService.getUpdatedAddresses(personFromDto.getAddresses(), personToSave.getAddresses()));
