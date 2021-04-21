@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ContactServiceImpl implements ContactService {
@@ -35,9 +34,9 @@ public class ContactServiceImpl implements ContactService {
     @Override
     @Transactional
     public void clearContacts(Person person) {
-        Optional<List<Contact>> optionalContacts = Optional.ofNullable(person.getContacts());
-        if (optionalContacts.isPresent()){
-            List<Contact> contactsToClear = new ArrayList<>(optionalContacts.get());
+        List<Contact> contacts = person.getContacts();
+        if (contacts != null){
+            List<Contact> contactsToClear = new ArrayList<>(contacts);
             if (!contactsToClear.isEmpty()) {
                 person.getContacts().clear();
                 contactRepository.deleteAll(contactsToClear);

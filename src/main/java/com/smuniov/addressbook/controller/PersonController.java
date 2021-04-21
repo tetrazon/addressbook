@@ -3,10 +3,12 @@ package com.smuniov.addressbook.controller;
 import com.smuniov.addressbook.dto.PersonDto;
 import com.smuniov.addressbook.service.PersonService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/address-book/persons")
@@ -19,39 +21,45 @@ public class PersonController {
     }
 
     @GetMapping
-    public List<PersonDto> personList(){
-        log.info("/address-book/persons -GET called");
-        return personService.getAll();
+    public ResponseEntity<Map<String, Object>> getAllPersons(@RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "3") int size,
+                                                             HttpServletRequest request){
+        logRequest(request);
+        return personService.getAll(page, size);
     }
 
     @GetMapping("/{id}")
-    public PersonDto getById(@PathVariable("id") String id){
-        log.info("/address-book/persons/" + id + " -GET called");
+    public PersonDto getById(@PathVariable("id") String id, HttpServletRequest request){
+        logRequest(request);
         return personService.getById(id);
     }
 
     @GetMapping("/person/")
-    public PersonDto getByEmail(@RequestParam("email") String email){
-        log.info("/address-book/persons/" + email + " -GET is called");
+    public PersonDto getByEmail(@RequestParam("email") String email, HttpServletRequest request){
+        logRequest(request);
         return personService.getByEmail(email);
     }
 
     @DeleteMapping("/person/{id}")
-    public void delete(@PathVariable("id") int id) {
-        log.info("/address-book/persons/" + id + " -DELETE is called");
+    public void delete(@PathVariable("id") int id, HttpServletRequest request) {
+        logRequest(request);
         personService.deleteById(id);
     }
 
     @PostMapping
-    public PersonDto create(@Valid @RequestBody PersonDto personDto){
-        log.info("/address-book/persons/ -POST is called");
-        return personService.create(personDto);
+    public ResponseEntity<PersonDto> create(@Valid @RequestBody PersonDto personDto, HttpServletRequest request){
+        logRequest(request);
+        return personService.create(personDto, request);
     }
 
     @PutMapping
-    public PersonDto update(@Valid @RequestBody PersonDto personDto){
-        log.info("/address-book/persons/ -GET is called, person id: " + personDto.getId());
-        return personService.update(personDto, true);
+    public ResponseEntity<PersonDto> update(@Valid @RequestBody PersonDto personDto, HttpServletRequest request){
+        logRequest(request);
+        return personService.update(personDto, request, true);
+    }
+
+    private void logRequest(HttpServletRequest request) {
+        log.info(request.getRequestURI() + ", -" +request.getMethod() + " is called");
     }
 
 }
